@@ -1,0 +1,2 @@
+{"mode": "react", "step": 1, "action": {"type": "tool", "name": "calc", "args": {"expression": "(27+53)*(12-7)"}}, "obs": "400", "tool_ms": 0, "scratch_hash": "e3b0c44298fc1c14", "ts": 1773228436.22527, "state_id": "s123-95e80176df"}
+{"mode": "react", "step": 2, "action": {"type": "final", "answer": "400", "confidence": 1.0}, "obs": "", "scratch_hash": "e3b0c44298fc1c14", "ts": 1773228436.226266, "state_id": "s123-95e80176df"}
