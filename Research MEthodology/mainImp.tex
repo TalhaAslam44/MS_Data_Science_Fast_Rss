@@ -1,0 +1,506 @@
+\documentclass[lettersize,journal]{IEEEtran}
+\usepackage{amsmath,amsfonts}
+\usepackage{algorithmic}
+\usepackage{array}
+\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\usepackage{textcomp}
+\usepackage{stfloats}
+\usepackage{url}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{balance}
+\usepackage{amssymb, geometry}
+\usepackage{booktabs}
+\geometry{margin=1in}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\title{Survey of DeepFake Generation and Detection Method}
+
+\begin{document}
+\title{Survey of DeepFake Generation and Detection Method}
+\author{
+\begin{tabular}{ccc}
+\textbf{Talha Aslam} & \textbf{Samar Iqbal} & \textbf{Arif Hussain} \\
+School of Computing & School of Computing & School of Computing \\
+FAST NUCES, Islamabad, & FAST NUCES, Islamabad, & FAST NUCES, Islamabad, \\
+Pakistan & Pakistan & Pakistan \\
+\textt{i248067@isb.nu.edu.pk} & \text{i247638@isb.nu.edu.pk} & \textt{i248047@isb.nu.edu.pk}
+\end{tabular}
+
+\vspace{1em}
+
+\begin{tabular}{cc}
+\textbf{Wasif Munir} \\
+School of Computing \\
+FAST NUCES, Islamabad\\
+Pakistan \\
+\textt{i27620@isb.nu.edu.pk} 
+\end{tabular}
+}
+
+%\maketitle
+\maketitle
+
+\begin{abstract}
+
+The quick development of deepfake technology, driven by generative models such as GANs, has generated major concerns over the veracity of digital content, particularly in media, politics, and security contexts. Deepfakes—manipulated video, images, or audio—are becoming increasingly indistinguishable from authentic content, rendering them an influential weapon against misinformation, defamation, and cybercrime. This paper overviews recent methods of deepfake detection, classifying them into handcrafted feature-based approaches, deep learning-based approaches, and hybrid methods that leverage the combination of more than one modality, including visual, audio, and temporal information. The paper also analyzes the current limitations and challenges encountered by detection approaches, including those of generalizability over a wide variety of datasets and deepfake categories. Moreover, it emphasizes the importance of extensive and diversified datasets, such as FaceForensics++ and Celeb-DF, for the development of stronger models. Also discussed are the ethical implications of deepfake technology focusing on the need for regulatory protocols and risk prevention measures to check its possible evils. The paper also explores how AI is utilized in detecting deepfakes and emphasizes the need for ensuring safe deployment of detection mechanisms. Lastly, future directions of research are presented, including enhancing detection efficiency on low-resource platforms and improving model robustness against different manipulation methods. This survey seeks to inform future advances in the detection of deepfakes, promoting the safeguarding of digital media integrity.
+
+
+\end{abstract}
+
+\begin{IEEEkeywords}
+Audio-Visual Synchronization, Convolutional Neural Networks (CNN), Dataset Evaluation, Deepfake Detection, Ethical Implications, Face Swapping, Generative Adversarial Networks (GANs), Multimodal Learning, Sequential Manipulation Detection, Risk Management in AI
+\end{IEEEkeywords}
+
+
+\section{Introduction}
+\IEEEPARstart{T}{he}  rise of deepfake technology, driven by advancements in generative models such as Generative Adversarial Networks (GANs), has introduced new challenges in the realm of digital media. Deepfakes—manipulated audio-visual content—are becoming increasingly sophisticated, posing significant risks to privacy, security, and the integrity of online information. With the widespread accessibility of deepfake creation tools, there has been a rapid increase in the production and dissemination of fake media, further complicating the identification of authentic content.
+
+This paper presents a comprehensive survey of current deepfake detection techniques, reviewing a variety of methodologies employed to identify manipulated content. These techniques are broadly categorized into handcrafted feature-based methods, deep learning-based methods, and hybrid approaches that integrate multimodal data such as visual, audio, and temporal information. Despite advancements in detection, deepfakes continue to evolve, challenging existing systems and requiring the development of more robust and generalized models. This paper also explores the ethical implications of deepfake technology, discussing the societal risks associated with its misuse and the need for effective regulatory frameworks.
+
+Through a detailed review of recent advancements, challenges, and proposed solutions in deepfake detection, this paper aims to provide insights into the state-of-the-art technologies, datasets, and strategies, offering a foundation for future research in this critical area of multimedia forensics.This paper makes several key contributions to the field of deepfake detection:
+
+
+\begin{itemize}
+    \item \textbf{Comprehensive Survey of Detection Techniques:}
+We provide a detailed review of the state-of-the-art deepfake detection methodologies, categorizing them into handcrafted feature-based methods, deep learning-based methods, and hybrid approaches that integrate multiple modalities (visual, audio, temporal data). This comprehensive categorization helps to identify the strengths and limitations of existing approaches and highlights the evolving trends in deepfake detection.
+    \item \textbf{Evaluation of Current Datasets:} This paper presents a comparative analysis of widely-used deepfake detection datasets, such as FaceForensics++, Celeb-DF, and the IAV-DF dataset. We assess their strengths in training deepfake detection models and identify the gaps that hinder generalization across different deepfake types. The review encourages the development of more diverse datasets to improve model robustness.
+    \item \textbf{Ethical and Regulatory Considerations:} We discuss the ethical implications of deepfake technology and its widespread use. The paper examines the risks associated with misinformation, privacy violations, and the need for effective regulatory frameworks to govern the development and deployment of deepfake detection tools.
+    \item \textbf{Proposed Framework for Future Research}:
+Based on the challenges identified, we propose several avenues for future research. This includes developing multi-modal detection systems, enhancing model generalization for real-world data, and addressing the ethical concerns surrounding deepfake technology through AI governance and risk management frameworks.
+    \item \textbf{Technological Advancements:}
+We highlight emerging technologies in deepfake detection, such as Vision Transformers and diffusion models, and discuss their potential to enhance detection accuracy, reduce computational overhead, and enable real-time deepfake detection on low-resource platforms
+\end{itemize}
+
+\section{Background}
+\noindent Deepfake technology, enabled by advanced Generative Adversarial Networks (GANs), has rapidly gained attention due to its ability to create hyper-realistic manipulated content, including images, videos, and audio. While this technology has opened up new possibilities in entertainment and media, it also presents significant threats to digital content authenticity. Deepfakes are increasingly being used for malicious purposes, such as misinformation, identity theft, and defamation, leading to a growing concern over their impact on society. The capacity to create realistic but false media has left it increasingly hard to tell real and fabricated content apart, creating a significant threat to privacy, security, and public trust.
+
+In spite of attempts at creating systems to detect deepfakes, existing methods are hampered by the constant update in deepfake generation processes. Conventional detection methods, based on detecting artifacts and inconsistencies, are weakening as deepfake models get more advanced. More sophisticated deep learning methods, including Convolutional Neural Networks (CNNs), have been promising in identifying subtle patterns of deepfakes, but these models are still not very good at generalizing across a wide range of datasets and manipulation techniques. Furthermore, the ethical concerns surrounding deepfake technology call for the establishment of regulatory environments to control its application and provide for the safe deployment of detection systems.
+
+
+
+
+\section{Overview of deepFakes history}
+\noindent Deepfake technology has its roots in the creation of generative models, specifically Generative Adversarial Networks (GANs), brought forward by Ian Goodfellow in 2014. GANs are made up of two neural networks— the generator that produces artificial content and the discriminator that judges it. The adversarial process between the networks creates highly realistic content. At first, models such as Autoencoders and Variational Autoencoders (VAEs) were employed to perform basic image edits, but it was only with the introduction of GANs that the quality of synthetic content was greatly enhanced. GANs enabled the generation of hyper-realistic images and videos that could be virtually undistinguishable from original material.\cite{abbas2024unmasking}
+
+The term ``deepfake" was first used in 2017 when a Reddit user uploaded videos that employed GANs to replace celebrity faces onto other people's bodies. This was the start of the common application of deepfake technology for entertainment and malicious reasons. By 2018, deepfakes were becoming more linked to the manipulation of public figures, usually leading to the production of deceptive videos that could damage reputations or mislead audiences. As these technologies advanced, the quality of deepfakes increased exponentially, and it became increasingly difficult for both humans and machines to identify the fake content.
+
+In an effort to counter the increasing threat, the Deepfake Detection Challenge was initiated in 2018 by Facebook and other collaborators with the goal of promoting research in detection technology. Nevertheless, even with these initiatives, the complexity of deepfake generation algorithms continued to surpass detection models. Consequently, deepfakes were extensively employed for more harmful uses, such as disinformation, generating false news, and political manipulation. Legal and ethical issues increased, with the development of legislation against the harmful application of deepfakes, including California's 2018 law criminalizing the production and dissemination of deepfake videos with the aim to injure.
+
+Nowadays, deepfake technology extends beyond face-swapping. It now encompasses uses like voice synthesis, body manipulation, and altering emotion, which can be employed for constructive and destructive intentions. Although detection systems for deepfakes are becoming more sophisticated, they remain incapable of reliably marking manipulations, particularly as the techniques are becoming increasingly embedded in digital systems. The rapid evolution of deepfake technology is a complex problem which requires ongoing research focused on improving detection procedures, developing regulatory frameworks, and ensuring ethical use of the technology.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Rm_pics/Capture.PNG}
+    \caption{History of Deepfakes}
+    \label{fig:enter-label}
+\end{figure}
+
+ \section{ Taxonomy of Survey of DeepFake Generation and Detection
+Method}
+
+\noindent The taxonomy for our project is as shown:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Rm_pics/Texonomy.jpg}
+    \caption{Taxonomy}
+    \label{fig:enter-label}
+\end{figure}
+\section{Literature Review}
+\noindent Deepfake detection has advanced at a remarkable pace, from early methods that focused on identifying evidence of manipulation in manipulated media to sophisticated machine learning-based techniques that can distinguish between real and fake content. This section briefly discusses the most common techniques and trends in deepfake detection, categorizing them into three broad categories: feature-based, deep learning-based, and multimodal approaches.
+\subsection{Feature-Based Methods}
+Feature-based detection methods scrutinize fine differences or residuals left by the deepfake generation. Initial approaches, as proposed by Korshunov and Marcel (2018), sampled features such as facial texture inconsistencies, illumination variations, and shading differences to distinguish between real and fake content. These methods tend to utilize handcrafted features such as the eye shine, blink patterns, and mouth movement, which are prone to tampering.
+
+However, these methods face limitations as the sophistication of deepfake generation techniques has increased. For example, face-swapping techniques or the use of GANs to manipulate facial features has led to much cleaner and more convincing alterations that do not leave easily detectable artifacts. Methods like the error level analysis (ELA) and pixel-based anomalies were successful with older-generation deepfakes but fail to generalize to newer, more advanced models that produce fewer perceptible signs of manipulation.
+
+The introduction of datasets like FF++ (FaceForensics++) and Celeb-DF has pushed the boundaries of feature-based methods by providing more diverse and realistic deepfake examples. However, as deepfake models grow more sophisticated, these traditional feature-based approaches are increasingly challenged by the subtlety of the manipulations.
+
+\subsection{Deep Learning-Based Methods}
+The advent of deep learning has revolutionized the field of deepfake detection. Convolutional neural networks (CNNs) and their extensions, such as the application of pre-trained models such as ResNet and VGGNet, have become pivotal in feature extraction and classification tasks. Deep learning techniques can learn to automatically extract intricate patterns from data, enabling better detection of deepfake content without the necessity of manual feature engineering.
+
+Here, the effort of Rossler et al. (2019) and the development of the Celeb-DF dataset represented a major advancement, as CNNs were learned on large datasets with both real and deepfake content, achieving greater accuracy in separating manipulated videos. Deepfake detection models such as XceptionNet and InceptionResNetV2 have proven to have great performance, especially in the detection of facial artifacts. The difficulty, though, is that most deepfake generators, especially those based on GANs, can generate media that is nearly indistinguishable from actual media.
+
+Additional progress has been achieved through the incorporation of vision transformers (ViTs), which use self-attention mechanisms to extract global features, as opposed to CNNs that emphasize local spatial features. This capacity to extract global patterns makes ViTs particularly valuable in detecting wider inconsistencies in videos, such as unnatural lighting or facial movement between frames. Transformer-based models have proven highly promising in dealing with the temporal and spatial components of deepfake videos.
+
+\subsection{Multimodal Approaches} 
+Deepfake detection also depends not solely on visual characteristics. Since multimodal detection mechanisms—those handling both visual and audio signals—emerged, there has been a game-changer, particularly for lip-sync and voice-synthesis deepfakes. Both audio-visual signals can be analyzed by multimodal systems and detect inconsistencies in the face compared to the voice, which normally is a deepfake manipulation signature.
+
+For instance, Javed et al. (2025) suggested an improved multimodal plan that combines CNN-based visual feature and audio features of voice and lip sync of videos. The model exceeded the performance of single-modality systems in detecting altered media, especially when the video is genuine but the audio has been manipulated.
+
+Aside from cross-modal analysis, temporal consistency across videos is equally important for the detection of deepfakes. Recurrent neural networks (RNNs), long short-term memory (LSTM) networks, and transformers have been utilized to study temporal dependencies between video frames, making it thus viable to detect anomalies in video sequences. Such approaches are particularly viable when detecting videos where faces are replaced or tampered with since such modifications often lead to frame discontinuities.
+
+\subsection{Challenges in Deepfake Detection} 
+Even with all these developments, deepfake detection is still not an easy feat because of several reasons. One, the rapid development of techniques for generating deepfakes ensures that new mechanisms have to be created on an ongoing basis to remain competitive. The advanced level of current deepfake methods that tend to create few detectable artifacts necessitates detection systems that include more advanced models that check global features and temporal inconsistencies instead of pixel-based analysis.
+
+Another important challenge is the absence of diverse training and test datasets. Most existing deepfake datasets like Celeb-DF and DFDC concentrate on European and American faces, and hence the generalization of models to other groups is restricted. The introduction of datasets like IAV-DF, which includes Indian facial features and diverse backgrounds, is a step in the right direction, but more diverse datasets are needed to improve the robustness of detection systems across different ethnicities and cultural contexts.\cite{ain2024regularized}
+
+In addition, though deep learning-based approaches have exhibited impressive performance, they are computation-intensive and consume large amounts of labeled data. This limits deploying these models to edge devices like smartphones or IoT devices with constrained computational capabilities. It is therefore important to design lightweight models with high accuracy that are computation-efficient.
+
+\subsection{Hybrid Approaches}
+Hybrid methods that utilize a combination of deep learning with other methods have also been developed. Certain models blend CNNs with other architectures like RNNs or ViTs to enable both spatial and temporal information processing, improving the model's potential for detecting deepfakes. Another significant hybrid model is the application of Generative Adversarial Networks (GANs) for identifying manipulated content by training an independent GAN-based discriminator that is capable of distinguishing between real and synthetic videos. These hybrid approaches have demonstrated higher accuracy than individual deep learning models.
+
+One intriguing development is that of researchers such as Kingra et al. (2025), who applied ensemble learning, wherein multiple deep learning models are ensembled together, to enhance generalizability across datasets. This technique makes it such that even when a single model has poor performance for a certain category of deepfake, other members of the ensemble can pick up the slack, thereby enhancing performance overall.
+
+\subsection{Ethical and Societal Implications}
+Deepfake technology poses serious ethical concerns, particularly in the realms of privacy violation, disinformation, and political manipulation. The application of deepfakes in disseminating disinformation during an election or creating news that can potentially sway the opinion of the masses has been a major concern. The ability to create fabricated content that is nearly indistinguishable from real reality undermines the credibility of digital media, especially given that such technologies are becoming more accessible.
+cite{amerini2024d}
+
+Researchers like Elhag et al. (2025) emphasize the requirement of developing ethical guidelines and regulatory frameworks for minimizing the risk of deepfakes. These frameworks need to consider both the need for innovation and accountability to ensure the protection of citizens and society from the adverse consequences of deepfake misuse. Also, explainable AI (XAI) designs that provide transparency in decision-making are crucial to establish trust in the use of deepfake detection technologies and that they will be used responsibly.
+\section{Methodology}
+\noindent Deepfake generation and detection technology is evolving rapidly, with new techniques emerging as detection platforms and generative models continue to improve. In this chapter, an informative overview of such techniques is provided, including traditional and current methodologies and their shortcomings. It will examine various stages involved in deepfake generation, detection methods employed, and current solutions to improve generalization and robustness.
+
+\subsection{Deepfake Generation Techniques}
+The process of creating deepfakes is complicated and employs generative models like Generative Adversarial Networks (GANs), Variational Autoencoders (VAEs), and even Diffusion Models more recently. These models have transformed the quality of the generated content to such an extent that it is ever harder to discern between fake and real media.\cite{article}
+
+\subsubsection{Generative Adversarial Networks (GANs)}
+
+Generative Adversarial Networks (GANs) remain one of the most influential methods in deepfake generation. GANs operate on a two-part system: the generator creates synthetic data (images, videos, audio), and the discriminator evaluates it against real data. Through an adversarial training process, these two networks continuously improve until the generated content is indistinguishable from real data.
+
+While GANs are incredibly effective for generating realistic faces, their weaknesses lie in their tendency to produce artifacts such as inconsistent lighting, unnatural facial expressions, or irregularities in hair and skin texture. These artifacts are sometimes subtle but can still be detected by robust detection systems. Despite these weaknesses, the continual evolution of GAN architectures—such as StyleGAN (used for highly realistic facial generation) and CycleGAN (used for photo-to-photo translation)—has made it increasingly difficult to detect deepfakes. Additionally, Conditional GANs (cGANs) and Pix2Pix are used for specific tasks like facial attribute editing and face swapping. The architecture of GANs are as shown:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Rm_pics/image9.png}
+    \caption{Architecture of GANs}
+    \label{fig:enter-label}
+\end{figure}
+\cite{balafrej2024enhancing}
+\subsubsection{Diffusion Models}
+Diffusion models have introduced a transformative approach to deepfake generation. These models operate by gradually transforming noise into coherent, detailed images or videos through a series of steps. Diffusion models like Stable Diffusion and DALL·E have produced high-quality content that is difficult to differentiate from real media. Unlike GANs, which generate content in one shot, diffusion models break down the generation process into multiple steps, reducing the likelihood of artifacts.
+
+The primary challenge with detecting deepfakes generated by diffusion models lies in their unique frequency-domain artifacts. Unlike GANs, which often introduce perceptible pixel-based inconsistencies, diffusion models can generate content that appears much cleaner at the pixel level, though it may leave detectable traces in the frequency domain. Detecting these traces requires models to not only focus on spatial inconsistencies but also incorporate advanced frequency-domain analysis into their detection workflows.
+
+\subsubsection{Variational Autoencoders (VAEs)}
+Variational Autoencoders (VAEs) have been another cornerstone for generating synthetic faces. VAEs work by encoding images into a latent space and then decoding them back into new, synthetic images. This approach enables face synthesis and attribute manipulation (such as changing the age or gender of a person’s face). However, compared to GANs and diffusion models, VAEs typically produce less photorealistic results and are generally less effective at generating complex high-resolution content.
+\cite{coccomini2024deepfake}
+VAEs are particularly useful for specific tasks such as facial attribute editing and identity manipulation, and their efficiency makes them suitable for real-time applications. Despite their use, VAEs are often limited by their inability to generate realistic high-resolution images as compared to GANs and diffusion models, which produce more photorealistic content.Figure 3 shows the encoder and decoder architecure of auto-encoder. For creation of deepfake using an autoencoder, 
+encoder-decoder architecture is trained on real images.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Rm_pics/image8.png}
+    \caption{Encoder-Decoder Architecture}
+    \label{fig:enter-label}
+\end{figure}
+\cite{budhiraja2024mad}
+\subsubsection{Neural Radiance Fields (NeRF)}
+Neural Radiance Fields (NeRFs) have recently gained attention for their ability to synthesize highly realistic 3D images and videos. NeRFs work by using a fully connected neural network to model a 3D scene, which can then be used to render high-quality images and videos from any viewpoint. This makes NeRFs ideal for deepfake generation tasks that require generating dynamic, 3D content, such as animated avatars or full-body manipulation.
+
+NeRFs represent a shift from traditional 2D image manipulation to 3D content generation, enabling spatial manipulation of objects and faces in videos. However, the advent of NeRF-based deepfakes introduces new challenges for detection, as traditional detection methods (such as CNNs) are primarily designed for 2D data. These models require new techniques for detecting inconsistencies across multi-view perspectives and video frames.
+
+\subsection{Deepfake Detection Methods}
+Deepfake detection has evolved from traditional image forensics to cutting-edge deep learning-based solutions. With the increase in deepfake sophistication, detection methods must be robust enough to handle new generation techniques that introduce subtle, high-dimensional manipulations.\cite{croitoru2024deepfake}
+
+\subsubsection{ Feature Extraction and Deep Learning Models}
+
+Early deepfake detection methods focused on handcrafted features, such as pixel inconsistencies, lighting and shading anomalies, and facial feature analysis (eye movement, blinking patterns). However, these methods struggled to generalize to more sophisticated generation techniques like GANs, VAEs, and diffusion models, where the generated content is often clean and indistinguishable from real content at the pixel level.
+
+Today, deep learning models, particularly Convolutional Neural Networks (CNNs), have largely replaced traditional handcrafted methods. CNNs automatically extract spatial features from images and videos, enabling the identification of inconsistencies like unnatural facial expressions, altered skin tones, and irregular light reflections. While CNNs remain effective for image-based detection, the rise of video deepfakes has led to the adoption of more complex models like Recurrent Neural Networks (RNNs) and Long Short-Term Memory Networks (LSTMs) to capture temporal inconsistencies across video frames.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Rm_pics/image6.png}
+    \caption{Architecture of CNNs}
+    \label{fig:enter-label}
+\end{figure}
+\subsubsection{Vision Transformers (ViTs)}
+
+Vision Transformers (ViTs) represent a leap forward in deepfake detection, especially for high-dimensional data. ViTs utilize a self-attention mechanism that processes the entire image or video frame simultaneously, capturing long-range dependencies and global context within the image. This is a significant departure from CNNs, which focus on local features, and allows ViTs to capture subtle, large-scale inconsistencies that are difficult to detect with CNNs.\cite{croitoru2024deepfake}
+
+ViTs have shown superior performance in detecting deepfakes created by advanced techniques, such as diffusion models, by identifying global patterns within the image or video. Their ability to handle high-dimensional data and their robustness across different manipulation techniques have made ViTs a cornerstone of modern deepfake detection.An overview of the model is depicted in the given figure:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{image7.png}
+    \caption{Model overview. We split an image into fixed-size patches, linearly embed each of them,
+add position embeddings, and feed the resulting sequence of vectors to a standard Transformer
+encoder. In order to perform classification, we use the standard approach of adding an extra learnable
+“classification token” to the sequence.}
+    \label{fig:enter-label}
+\end{figure}
+\cite{dagar2024tex}
+\subsubsection{Hybrid Detection Approaches}
+
+To address the limitations of single-model approaches, hybrid models are increasingly popular in deepfake detection. These models combine multiple architectures, such as CNNs, RNNs, ViTs, and even GANs, to extract a variety of spatial, temporal, and frequency-domain features. By combining multiple perspectives, hybrid models can detect deepfakes with greater accuracy and efficiency.
+
+For example, combining CNNs for spatial feature extraction with RNNs for temporal sequence analysis allows hybrid models to detect video deepfakes that involve changes in both individual frames and across time. Similarly, incorporating ViTs into hybrid models helps capture global features that CNNs may miss, improving detection in complex deepfakes.
+\cite{elhag2025deep}
+
+\subsubsection{Multimodal Deepfake Detection}
+
+Deepfakes are often multimodal, meaning they can involve alterations in both the visual and auditory components. For example, lip-sync deepfakes involve synchronized facial movements and audio that don’t match. Multimodal detection models leverage both audio and video data to detect inconsistencies across these modalities. Multimodal models typically use CNNs for visual analysis and Recurrent Neural Networks (RNNs) or transformers for audio analysis, enabling them to detect deepfakes that involve mismatched visual and auditory data.
+
+Such models can be used for a variety of applications, including voice spoofing detection, audio-video mismatches, and cross-modal inconsistencies, which are critical for detecting complex deepfakes that manipulate both the audio and video tracks.\cite{gupta2024spotting}
+
+\subsection{Generalization and Transfer Learning}
+
+
+\subsubsection{The Generalization Problem}
+A significant challenge in deepfake detection is the generalization problem. Most current detection models are trained on specific datasets and deepfake generation techniques. However, when tested on new, unseen deepfake techniques (e.g., newly developed GANs, diffusion models, or NeRFs), these models often fail to generalize. The detection system typically learns to recognize specific artifacts associated with the deepfake generation method, limiting its ability to detect new techniques that leave different traces.
+
+To tackle this issue, recent research has focused on improving the generalization of detection models by training them on diverse datasets and incorporating synthetic frequency patterns to teach the model to recognize more general features of deepfakes. These methods enhance the model's ability to detect deepfakes regardless of how they are generated.
+
+\subsubsection{Few-Shot Learning and Zero-Shot Transferability}
+
+Given the rapid evolution of deepfake generation techniques, few-shot learning and zero-shot learning have become essential in training models to detect deepfakes with minimal labeled data. Few-shot learning enables models to recognize new deepfake techniques after only seeing a few examples, while zero-shot learning allows models to detect unseen deepfake methods without any prior training.\cite{huda2024fake}
+
+These techniques have shown promising results in adapting to new deepfake generators, even with limited data. By focusing on generic deepfake features and leveraging data augmentation strategies, these models improve adaptability and performance across multiple domains and datasets.
+
+
+
+\subsection{Datasets and Evaluation Metrics}
+
+The development of deepfake detection models heavily relies on the availability of large, labeled datasets. Some of the most widely used datasets include:
+
+\begin{itemize}
+    \item Celeb-DF: A large-scale dataset containing celebrity videos used for training face manipulation detection models.
+
+    \item DFDC: The Deepfake Detection Challenge dataset, containing a diverse set of real and manipulated media.
+
+    \item FaceForensics++: A high-quality dataset with realistic videos for detecting manipulated content, including facial forensics tasks.
+
+    \item IAV-DF:A diverse dataset that includes faces from multiple ethnicities and backgrounds, improving the generalization of detection models.\cite{huda2024fake}
+\end{itemize}
+
+Evaluation metrics for deepfake detection include:
+
+\begin{itemize}
+    \item Accuracy : The proportion of correctly classified instances (both real and fake).
+
+    \item F1-score: The balance between precision and recall, particularly important in high-stakes detection scenarios.
+    
+    \item AUC-ROC: The area under the receiver operating characteristic curve, measuring the trade-off between true positive and false positive rates.
+\cite{javed2025enhancing}
+    \item False Positive Rate: The rate at which real content is incorrectly classified as fake, which is critical in high-stakes environments like elections or media.
+\end{itemize}
+
+\noindent Evaluation across multiple datasets and tasks ensures the robustness of detection models, especially in real-world applications.\cite{pei2024deepfake}
+
+
+
+
+
+
+
+
+
+\section{Evaluation}
+\noindent This section provides a comprehensive evaluation of the deepfake detection methodologies described earlier, focusing on their performance, generalization across datasets, robustness to unseen deepfake generation methods, and the real-world applicability of these models. We evaluate detection systems across a range of criteria such as accuracy, efficiency, robustness, and generalizability, based on current benchmarks and datasets.
+
+\cite{jiang2025robust}
+\subsection{ Performance Metrics}
+
+\noindent To evaluate the effectiveness of deepfake detection systems, a variety of performance metrics are commonly used. These metrics provide insights into how well a model can classify real versus manipulated content, how it handles false positives and false negatives, and its ability to generalize across different deepfake generation methods.
+
+\subsubsection{Accuracy}
+
+Accuracy is a basic measure of how well the model performs overall. It is defined as the ratio of correct predictions (both real and fake) to the total number of samples. While accuracy provides a broad understanding of the model’s performance, it can be misleading in cases where the dataset is imbalanced. For example, if the dataset has a higher number of real images than fake ones, the model could achieve high accuracy by simply predicting the real class most of the time.
+\cite{qawasmi2025detecting}
+\subsubsection{Precision, Recall, and F1-Score}
+
+\begin{itemize}
+    \item Precision: Precision measures how many of the predicted deepfake samples are truly deepfakes. It is important when the cost of incorrectly identifying real media as fake (false positives) is high.
+
+\vspace{0.1in}
+
+    $\text{Precision} = \frac{\text{True Positives}}{\text{True Positives} + \text{False Positives}}$
+   
+    \vspace{0.1in}
+    
+    \item  Recall: Recall, on the other hand, measures how many of the actual deepfake samples the model successfully detects. It is crucial when the cost of missing a fake media (false negatives) is high.\cite{kaur2024deepfake}
+
+    \vspace{0.1in}
+
+    $\text{Recall} = \frac{\text{True Positives}}{\text{True Positives} + \text{False Negative}}$
+
+\vspace{0.1in}
+
+    \item The F1-score is the harmonic mean of precision and recall, providing a balance between the two. It is particularly useful when the dataset is imbalanced or when both false positives and false negatives are costly.
+
+     \vspace{0.1in}
+
+$\text{F1-Score} = \frac{\text{2 x Precision x Recall}}{\text{Precision} + \text{Recall}}$
+     
+\end{itemize}
+
+\subsubsection{AUC-ROC (Area Under the Receiver Operating Characteristic Curve)}
+
+AUC-ROC is a valuable metric for evaluating binary classifiers. It plots the true positive rate (recall) against the false positive rate at various classification thresholds. A higher AUC indicates that the model has better discriminatory power.\cite{kingra2023siamnet}
+
+\subsubsection{False Positive and False Negative Rates}
+The False Positive Rate (FPR) measures the rate at which real content is incorrectly classified as fake. The False Negative Rate (FNR) measures the rate at which fake content is misclassified as real. In real-world applications, such as financial transactions or political misinformation, the consequences of false positives and false negatives are high, making these metrics critical.
+
+\subsection{Evaluation on Popular Datasets}
+
+\noindent Deepfake detection models are typically evaluated on benchmark datasets that provide labeled samples of both real and fake media. Below are some of the key datasets commonly used for evaluating deepfake detection systems:
+
+\subsubsection{Celeb-DF}
+
+The Celeb-DF dataset contains video clips of celebrities, where faces are swapped using deepfake generation techniques. This dataset is widely used to evaluate identity manipulation and face-swapping methods. It contains both high and low-quality videos, which allow models to be tested under different conditions. The dataset's diversity and high-quality video frames make it an essential tool for benchmarking the performance of CNNs and ViTs in detecting deepfake content.\cite{kingra2025assessing}
+
+\subsubsection{DFDC (DeepFake Detection Challenge)}
+
+The DFDC dataset, created for the DeepFake Detection Challenge, includes over 3,000 videos with manipulated faces. The dataset contains various challenges, such as videos with different lighting, poses, and facial expressions. It serves as one of the most comprehensive and diverse datasets for evaluating the robustness and generalization ability of deepfake detection models. It tests how well models can generalize across diverse types of video manipulation, including face-swapping and facial reenactment.
+
+\subsubsection{ FaceForensics++}
+
+The FaceForensics++ dataset is designed for face manipulation detection and contains both high-quality and low-quality videos. It provides samples of facial manipulations like face swapping, facial reenactment, and deepfakes generated by GANs. FaceForensics++ has become a benchmark for evaluating detection models that specialize in facial features, particularly for models that use temporal information from consecutive video frames.\cite{rathoure2024combating}
+
+\subsubsection{IAV-DF}
+
+The IAV-DF dataset includes videos of individuals from multiple ethnicities and backgrounds, making it particularly valuable for evaluating the generalization of deepfake detection models across demographic groups. The dataset is designed to overcome the bias present in other datasets, such as Celeb-DF, which predominantly features Western faces. By including a broader range of ethnicities and age groups, IAV-DF ensures that detection models are more robust and applicable to diverse populations.\cite{kuang2022dual}
+
+\subsubsection{Fakespot}
+
+The Fakespot dataset is dedicated to evaluating audio-visual deepfake detection models. It contains real and synthetic videos with corresponding manipulated audio, allowing models to analyze discrepancies between the visual and auditory components of a deepfake. This dataset is essential for training multimodal models that rely on both visual and audio cues to detect deepfakes, such as those used in lip-sync detection.
+
+\subsection{Challenges in Deepfake Detection}
+
+While progress in deepfake detection is significant, several key challenges persist. These challenges are critical to the continued development and real-world deployment of detection models.
+
+\subsubsection{Generalization Across Deepfake Generators}
+
+A fundamental challenge is the generalization of detection models. Most deepfake detection systems are trained on specific datasets and deepfake generation methods. However, when exposed to new, unseen deepfake generators, such as newly developed GANs or diffusion models, these models often fail to generalize and perform poorly. This issue arises because detection systems are designed to identify specific artifacts left by certain generators, making them less adaptable to novel methods. Research is ongoing to develop generic detection systems capable of identifying deepfakes from various sources, regardless of the underlying generation method.
+\cite{masood2023deepfakes}
+
+\subsubsection{ Bias in Datasets}
+
+Most deepfake datasets, such as Celeb-DF and DFDC, are heavily skewed toward specific demographics, particularly Caucasian faces. As a result, models trained on these datasets may not perform well on content involving people from different ethnic backgrounds. The IAV-DF dataset is an effort to address this issue, providing a more diverse set of data to ensure that deepfake detection models generalize across different ethnicities. However, further research is needed to create truly representative datasets that span all demographics and face types.\cite{shao2025robust}
+
+\subsubsection{Real-Time Detection}
+
+Real-time detection of deepfakes remains an ongoing challenge. Many state-of-the-art deepfake detection models require substantial computational resources, particularly for video-based deepfake detection that analyzes multiple frames. Real-time detection is especially important in live-streaming environments or social media platforms where content is constantly being uploaded. Developing lightweight models that can achieve high accuracy without compromising computational efficiency is crucial for real-world applications.
+
+\subsubsection{Adversarial Attacks}
+
+Deepfake detection models are vulnerable to adversarial attacks, in which small perturbations are added to the input data to fool the model into making incorrect predictions. These attacks are especially problematic in security-sensitive applications, such as financial fraud detection or political misinformation. Developing robust detection models that can resist adversarial attacks is essential for ensuring the reliability of deepfake detection systems in practical scenarios.
+
+
+\subsection{Cross-Domain Transferability and Few-Shot Learning}
+
+The ability of deepfake detection models to transfer across domains and perform well on unseen deepfake generators is one of the key challenges that needs to be addressed for real-world applications. Few-shot learning techniques, which allow models to learn from a small number of examples, are gaining traction in deepfake detection. These models enable detectors to adapt quickly to new deepfake techniques, even when only a few samples are available. Zero-shot learning methods further push the boundaries, allowing deepfake detectors to handle unseen generators without any retraining, relying on transfer learning and synthetic data augmentation.
+
+Recent advancements in adversarial training and self-supervised learning are helping models improve their ability to generalize and detect new deepfake generation techniques. By training deepfake detection models on diverse and augmented datasets, researchers aim to create more adaptive systems that can handle the rapidly evolving landscape of deepfake generation.\cite{muthukumar2024fake}
+
+\section{Challenges and Future Directions}
+
+\noindent As deepfake detection technologies continue to evolve, researchers and practitioners face several critical challenges that need to be addressed in order to make these systems more robust, efficient, and applicable in real-world scenarios. This section discusses the ongoing challenges in the field of deepfake detection and outlines potential future research directions to overcome these barriers.\cite{sharma2025robust}
+
+\subsection{Challenges in Deepfake Detection}
+
+\subsubsection{Scalability and Real-Time Detection}
+One of the most pressing challenges in deepfake detection is real-time detection, especially for applications in live-streaming or social media platforms. While state-of-the-art models, particularly those based on deep learning (e.g., CNNs, RNNs, ViTs), show impressive accuracy on large-scale datasets, they often require significant computational resources, making them impractical for real-time deployment on resource-constrained devices. For example, video-based detection models require processing multiple frames in real-time, which can be slow, especially when running on mobile devices or during live video broadcasts.
+
+To address this, lightweight models need to be developed, which can maintain high detection accuracy while minimizing computational demands. Techniques like model pruning, quantization, and knowledge distillation can be used to create models that are both accurate and computationally efficient. The trade-off between model complexity and real-time performance will continue to be a major area of research.\cite{narne2024advanced}
+
+\subsubsection{Cross-Modal and Cross-Generator Generalization}
+Another significant challenge is generalization—particularly the ability of detection models to perform well across different deepfake generators. As deepfake generation techniques evolve rapidly, new models (e.g., those based on Neural Radiance Fields (NeRFs) or diffusion models) often introduce new and novel artifacts that are not easily detected by existing systems. Deepfake detection models trained on specific datasets may fail to generalize when faced with new deepfake generation methods that produce content with significantly different characteristics.
+
+Researchers are exploring approaches like few-shot learning and zero-shot learning to tackle this challenge. Few-shot learning allows models to quickly adapt to new generators after seeing only a few examples, while zero-shot learning enables models to detect new deepfakes without requiring retraining. These approaches rely heavily on the concept of transfer learning—the ability to apply knowledge gained from one task or dataset to another. As new deepfake generation methods emerge, improving models’ ability to generalize across domains and to detect previously unseen content will be critical for ensuring the reliability and robustness of deepfake detection systems.\cite{srinivasan2025deepfake}
+
+\subsubsection{Data Scarcity and Bias}
+A major issue in the current landscape of deepfake detection is the lack of diverse datasets. Most available datasets (e.g., Celeb-DF, DFDC) feature faces predominantly from Caucasian individuals, leading to models that perform poorly on people from other ethnicities. This bias in training data can result in detection models that are less effective across different demographics. Given that deepfake technologies can manipulate anyone’s image or likeness, it is imperative that future datasets be more inclusive and representative of global diversity.
+
+Moreover, deepfake datasets often suffer from data scarcity in certain domains. For example, there are limited high-quality datasets for detecting voice deepfakes or multimodal deepfakes that involve both video and audio manipulations. Researchers are pushing for the development of larger, more diverse datasets that encompass a variety of ethnicities, ages, and environments. These datasets will help create more generalizable detection systems that work in a variety of real-world contexts, beyond controlled laboratory conditions.
+
+\subsubsection{Adversarial Attacks and Robustness}
+
+Adversarial attacks where slight modifications are made to the input data to mislead a model—pose a significant threat to the reliability of deepfake detection systems. These attacks can render detection models ineffective by introducing subtle, imperceptible changes to deepfake media that fool even state-of-the-art models. As deepfake detection methods become more advanced, adversarial attacks will become increasingly sophisticated.
+
+Researchers are exploring adversarial training and robust model architectures to defend against these attacks. One promising approach is adversarial robustness, which focuses on making detection models resistant to small perturbations in the input data. Developing models that can resist adversarial perturbations while maintaining high accuracy is an ongoing challenge, and crucial for ensuring the security of deepfake detection systems in real-world applications.
+
+\subsection{Future Research Directions}
+
+\subsubsection{Multi-Modal and Hybrid Approaches}
+As deepfake detection systems evolve, multi-modal approaches—those that combine different types of data, such as video, audio, and text—are gaining significant attention. Audio-visual deepfakes, where the audio track is manipulated to match lip movements in the video, are one of the most common forms of deepfakes. By analyzing both visual and auditory cues, multi-modal systems can detect inconsistencies across these modalities and achieve higher accuracy.\cite{xu2025localization}
+
+A hybrid model that combines CNNs for spatial feature extraction with RNNs or transformers for temporal analysis, and audio analysis networks for detecting cross-modal inconsistencies, could improve detection robustness. The ability to cross-reference visual and auditory information provides a more comprehensive solution to deepfake detection, especially in lip-sync and voice manipulation attacks.
+
+\subsubsection{Explainable Deepfake Detection (XAI)}
+
+One promising area of research is Explainable AI (XAI) for deepfake detection. Most current models especially deep learning-based systems—are often viewed as "black boxes," with limited understanding of how decisions are made. In high stakes environments, such as law enforcement or political contexts, it is critical to understand why a model flagged content as fake or real. Developing interpretable models that can explain the reasoning behind their predictions would increase trust in deepfake detection systems.
+
+XAI techniques could involve creating attention maps or saliency maps to show which parts of an image or video influenced the model’s decision, or using post-hoc interpretability methods to explain the decision-making process. These explainable systems would help stakeholders trust the detection system and make informed decisions based on its output.
+
+\subsubsection{Synthetic Data Generation for Model Training}
+
+To overcome the scarcity of labeled data, particularly for new deepfake generation techniques, synthetic data generation methods are being explored. These methods involve generating fake deepfake samples artificially to augment the training dataset. For example, generative models like GANs or diffusion models can be used to generate realistic deepfake samples that can then be labeled and added to the training dataset.
+
+Using synthetic data to train detection models can improve their performance by providing them with a greater variety of deepfake examples. Additionally, data augmentation techniques, such as spatial transformations (cropping, rotation) or temporal shifts, can be used to artificially increase dataset diversity, enabling models to generalize better across unseen data.
+
+\subsubsection{Cross-Domain Deepfake Detection}
+
+A major future direction involves improving the ability of detection systems to generalize across different deepfake generators and domains. With the increasing diversity of deepfake generation methods, from GANs to diffusion models and NeRFs, the challenge lies in developing models that can detect deepfakes across different domains (e.g., audio, video, and multimodal deepfakes).
+
+Researchers are exploring transfer learning and domain adaptation strategies to tackle this issue. Transfer learning allows detection models to use knowledge gained from one domain and apply it to a new one with minimal additional training. Domain adaptation techniques further improve model performance by fine-tuning it on smaller datasets specific to a new generator or domain.
+\cite{wang2024timely}
+\subsubsection{Real-Time Deepfake Detection}
+
+For practical applications, especially in live-streaming or social media, deepfake detection systems need to be real-time and efficient. Research into developing lightweight detection models that can work with low-latency systems is critical. These models must be able to process high-definition video streams and detect manipulations in real-time without significant delays.
+
+To achieve this, edge computing techniques, where computations are done on local devices rather than relying on centralized servers, are being explored. Additionally, research into GPU acceleration and model compression techniques will help improve the efficiency of real-time deepfake detection systems.
+The results for different models are:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Rm_pics/image5.png}
+    \caption{Results}
+    \label{fig:enter-label}
+\end{figure}
+
+\section{Conclusion}
+
+Deepfake technology has developed at a swift pace, rendering it harder to decide whether a digital piece of content is original or artificially created. Deepfake technology, fueled by powerful generative models such as Generative Adversarial Networks (GANs), Variational Autoencoders (VAEs), and Diffusion Models, has contributed to the production of hyper-realistic images, videos, and audio, which may be indistinguishable from authentic media. As the quality of produced content increases, so does the potential for its ill use—whether in disseminating false information, perpetrating fraud, or eroding privacy. As such, the identification of deepfakes has emerged as an urgent problem, with serious implications for security, media integrity, and public trust.
+
+In recent years, deepfake detection methods have changed, shifting from conventional handcrafted feature extraction approaches to more advanced deep learning-based models. Convolutional Neural Networks (CNNs), Recurrent Neural Networks (RNNs), Vision Transformers (ViTs), and combinations of these technologies have all shown high accuracy in the detection of deepfakes. The work has not been without challenges, however. One of the biggest challenges is the generalization problem: deepfake detection models do not typically find it easy to detect content created with new and unknown methods. Most models are trained on particular kinds of deepfakes and tend to be useless when used with novel generation techniques that create content with new artifacts. This constraint is a pointer towards the need for models that are capable of generalizing across various deepfake generators so that they remain robust with the ever-increasing emergence of new techniques.
+
+Another issue is the lack of varied and representative datasets. Most deepfake detection models are also trained on datasets such as Celeb-DF and DFDC, which consist mainly of Western-ethnicity faces. This brings along inherent biases in the models, reducing their utility in more diverse populations. The unavailability of datasets that exhibit diverse demographics such as those included in the IAV-DF dataset presents a limitation to having equitable and effective detection systems. In order to enhance generalization and equity, it is imperative to have datasets with all ethnic groups, ages, and backgrounds in order for deepfake detection models to be usable in the global population.
+
+Additionally, real-time detection remains a critical challenge, particularly as deepfakes are increasingly used in dynamic environments like live streaming, social media platforms, and video conferencing. Many state-of-the-art detection models require significant computational resources, making them impractical for deployment in real-time settings where speed and efficiency are paramount. Developing lightweight models that are both fast and accurate is essential to enable the deployment of deepfake detection systems in real-world applications, particularly on edge devices with limited processing power, such as smartphones and IoT devices.
+
+Another issue that needs urgent attention is the vulnerability of deepfake detection systems to adversarial attacks. Adversarial attacks introduce subtle perturbations to the input data that deceive the detection model into making incorrect predictions, often without changing the appearance of the content. As deepfake generation methods become more sophisticated, these attacks are likely to become more common, and models that are not resistant to such manipulations will be ineffective. Developing adversarially robust models is critical to ensuring the reliability and security of deepfake detection systems, especially in environments where trust is paramount.\cite{vahdati2024beyond}
+
+Despite these challenges, the field of deepfake detection is rapidly evolving, with promising advancements on the horizon. One such advancement is the use of multimodal detection systems that analyze both audio and video content. Deepfakes often involve manipulation of both the visual and auditory components of a media file, and multimodal systems can detect inconsistencies between these two modalities that may not be apparent when analyzing video or audio alone. By incorporating both visual and auditory cues, multimodal detection systems can achieve higher accuracy and robustness, particularly in cases of lip-sync deepfakes or manipulated audio.
+
+Moreover, the integration of few-shot learning and zero-shot learning methods offers promising avenues for improving the adaptability of detection systems. Few-shot learning allows models to detect new deepfake techniques with minimal training data, while zero-shot learning enables models to identify deepfakes without requiring any training on the new generation method. These approaches leverage transfer learning, which allows models to apply knowledge gained from one domain to new, unseen data, thereby improving their generalization capabilities. As new deepfake generation methods continue to emerge, the ability of detection systems to adapt quickly with minimal data will be crucial for ensuring their long-term efficacy.
+
+The development of explainable AI (XAI) for deepfake detection is another promising direction. Currently, most deepfake detection models, especially those based on deep learning, operate as "black boxes," providing little insight into how they arrive at their predictions. In critical applications, such as in legal or media contexts, understanding why a model flagged a piece of content as fake is essential. XAI techniques can provide transparency by offering visualizations of the model’s decision-making process, such as heatmaps that show which areas of the image or video influenced the model's decision. This would not only improve trust in the detection system but also make it easier to explain model decisions to stakeholders.\cite{vahdati2024beyond}
+
+Furthermore, synthetic data generation using techniques like GANs or data augmentation is a promising strategy to overcome the issue of data scarcity. By generating artificial deepfake samples, researchers can augment existing datasets and train detection models on a wider variety of deepfake content. This could improve the robustness of models and allow them to handle a broader range of deepfake techniques. Additionally, data augmentation methods—such as applying transformations to existing data—could help create more diverse and generalized datasets without requiring new labeled data.
+
+Finally, the ethical and societal implications of deepfake technology cannot be overlooked. As deepfakes become more prevalent, the potential for misuse increases, from spreading misinformation to committing fraud. Ensuring the ethical use of deepfake detection systems will require not only the development of robust models but also regulatory frameworks and policies to govern the use of these systems. There is a need for collaboration between researchers, policymakers, and industry leaders to create guidelines that protect privacy, prevent harm, and ensure that deepfake detection technologies are used responsibly.
+\cite{tian2024detection}
+\subsection{Key Future Research Directions}
+\begin{itemize}
+    \item Cross-Domain Generalization: Developing deepfake detection models that can generalize to unseen generation techniques without requiring constant retraining.
+
+    \item Multimodal Detection: Combining audio and visual cues to detect deepfakes in videos where both components are manipulated.
+
+    \item Real-Time Detection: Developing lightweight, efficient detection systems capable of operating in real-time environments like live-streaming platforms.
+
+    \item Adversarial Robustness: Ensuring deepfake detection systems are resistant to adversarial attacks that could bypass their defenses.
+
+
+    \item Explainable AI (XAI): Building interpretable models that provide insight into their decision-making process to enhance transparency and trust.
+
+    \item Synthetic Data Generation: Leveraging synthetic data to augment training datasets and improve detection robustness.
+
+    \item Ethical and Legal Frameworks: Establishing guidelines and regulations to ensure the responsible use of deepfake detection technologies.
+\end{itemize}
+
+
+\bibliographystyle{acm}
+\bibliography{rm_bib}
+
+
+
+
+
+
+
+\end{document}
+
+
